@@ -30,21 +30,21 @@ function read(req, res) {
     res.json({ data });
 }
 
-async function readTheaters(req, res, next) {
+async function listTheaters(req, res, next) {
     const { movie } = res.locals;
-    const data = await moviesService.readTheaters(movie.movie_id);
+    const data = await moviesService.listTheaters(movie.movie_id);
     res.json({ data });
 }
 
-async function readReviews(req, res, next) {
+async function listReviews(req, res, next) {
     const { movie } = res.locals;
-    const data = await moviesService.readReviews(movie.movie_id);
+    const data = await moviesService.listReviews(movie.movie_id);
     res.json({ data })
 }
 
 module.exports = {
     read: [asyncErrorBoundary(movieExists), read],
     list: [asyncErrorBoundary(list)],
-    readTheaters: [asyncErrorBoundary(movieExists), asyncErrorBoundary(readTheaters)],
-    readReviews: [asyncErrorBoundary(movieExists), asyncErrorBoundary(readReviews)]
+    listTheaters: [asyncErrorBoundary(movieExists), asyncErrorBoundary(listTheaters)],
+    listReviews: [asyncErrorBoundary(movieExists), asyncErrorBoundary(listReviews)]
 }

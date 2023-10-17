@@ -1,6 +1,4 @@
 const knex = require("../db/connection");
-const mapProperties = require("../utils/map-properties");
-const reduceProperties = require("../utils/reduce-properties");
 
 function list() {
   return knex("movies").select("*");
@@ -21,7 +19,7 @@ function read(movie_id) {
       .first();
   }
 
-function readTheaters(movie_id) {
+function listTheaters(movie_id) {
     return knex("movies as m")
     .join("movies_theaters as mt", "m.movie_id", "mt.movie_id")
     .join("theaters as t", "mt.theater_id", "t.theater_id")
@@ -33,27 +31,40 @@ function readTheaters(movie_id) {
     .where({"m.movie_id": movie_id, "mt.is_showing": true});
 }
 
-const addCritic = mapProperties({
-    critic_id: "critics.critic_id",
-    preferred_name: "critics.preferred_name",
-    surname: "critics.surname",
-    organization_name: "critics.organization_name",
-    created_at: "critics.created_at",
-    updated_at: "critics.updated_at"
-})
 
-function readReviews(movie_id) {
-    return knex("movies as m")
-      .join("reviews as r", "m.movie_id", "r.movie_id")
+function listReviews(movie_id) {
+    return knex("reviews as r")
       .join("critics as c", "r.critic_id", "c.critic_id")
-      .select("r.*", "c.*")
-      .where({ "m.movie_id": movie_id })
+      .select("r.*", "c.*", "c.created_at AS critic_created_at", "c.updated_at AS critic_updated_at")
+      .where({ "r.movie_id": movie_id })
+      .then((reviews) => {
+        const formattedReviews = reviews.map((review) => {
+          return {
+            review_id: review.review_id,
+            content: review.content,
+            score: review.score,
+            created_at: review.created_at,
+            updated_at: review.updated_at,
+            critic_id: review.critic_id,
+            movie_id: review.movie_id,
+            critic: {
+              critic_id: review.critic_id,
+              preferred_name: review.preferred_name,
+              surname: review.surname,
+              organization_name: review.organization_name,
+              created_at: review.critic_created_at,
+              updated_at: review.critic_updated_at,
+            },
+          };
+        });
+        return formattedReviews;
+      });
   }
 
 module.exports = {
     list,
     listShowing,
     read,
-    readTheaters,
-    readReviews
+    listTheaters,
+    listReviews
 }
