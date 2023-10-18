@@ -3,6 +3,9 @@ const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 
 // Middleware
 
+// reviewExists function validates that a review matches the reviewId in request params.
+// if it matches, it saves the review object to res.locals. otherwise, it responds with an error.
+
 async function reviewExists(req, res, next) {
     const review = await reviewsService.read(req.params.reviewId);
         if (review) {
@@ -14,6 +17,9 @@ async function reviewExists(req, res, next) {
 
 // CRUD
 
+// update function calls update service with the review saved in res.locals.
+// after update service runs, it calls returnUpdate with the review_id and sends the response.
+
 async function update(req, res, next) {
     const updatedReview = {
       ...req.body.data,
@@ -24,6 +30,8 @@ async function update(req, res, next) {
     const data = await reviewsService.returnUpdate(review.review_id)
       res.json({ data });
   }
+
+// destroy function calls destroy service with a given review_id.
 
 async function destroy(req, res) {
     const { review } = res.locals;

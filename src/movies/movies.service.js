@@ -1,8 +1,13 @@
 const knex = require("../db/connection");
 
+// list function returns an array of all movies.
+
 function list() {
   return knex("movies").select("*");
 }
+
+// listShowing function returns an array of all movies that are currently showing.
+// adds the "is_showing" property to each movie object in the array.
 
 function listShowing() {
     return knex("movies as m")
@@ -12,12 +17,16 @@ function listShowing() {
     .where({"mt.is_showing": true});
 }
 
+// read function returns a movie that matches given movie_id.
+
 function read(movie_id) {
     return knex("movies")
       .select("*")
       .where({ "movies.movie_id": movie_id })
       .first();
   }
+
+// listTheaters function returns an array of theaters where a movie is showing.
 
 function listTheaters(movie_id) {
     return knex("movies as m")
@@ -31,6 +40,7 @@ function listTheaters(movie_id) {
     .where({"m.movie_id": movie_id, "mt.is_showing": true});
 }
 
+// listReviews function returns an array of reviews for given movie_id.
 
 function listReviews(movie_id) {
     return knex("reviews as r")

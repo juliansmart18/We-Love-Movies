@@ -1,6 +1,9 @@
 const knex = require("../db/connection");
 const reduceProperties = require("../utils/reduce-properties");
 
+// returns an array of all theaters. each theater object includes a "movies" property with a nested array of movies showing.
+
+// uses reduceProperties function to reduce movies into an array contained by "movies" property.
 
 function list() {
     return knex("theaters as t")
