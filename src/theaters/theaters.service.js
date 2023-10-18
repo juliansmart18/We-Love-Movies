@@ -10,8 +10,6 @@ function list() {
       .where({ "mt.is_showing": true })
       .then((data) => {
         const configuration = {
-          theater_id: ["theater_id"],
-          name: ["name"],
           movie_id: ["movies", null, "movie_id"],
           title: ["movies", null, "title"],
           runtime_in_minutes: ["movies", null, "runtime_in_minutes"],
@@ -25,7 +23,6 @@ function list() {
         
         const reduceTheaterAndMovies = reduceProperties("theater_id", configuration);
         const transformedData = reduceTheaterAndMovies(data);
-  
         return transformedData;
       });
   }
